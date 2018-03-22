@@ -4,11 +4,11 @@ MODULES=app lib/lpc_chip_43xx lib/lpc_board_ciaa_edu_4337
 DEFINES=CORE_M4 __USE_LPCOPEN __USE_NEWLIB
 
 SRC=$(foreach m, $(MODULES), $(wildcard $(m)/src/*.c))
-ASRC=$(foreach m, $(MODULES), $(wildcard $(m)/src/*.s))
+ASRC=$(foreach m, $(MODULES), $(wildcard $(m)/src/*.S))
 OUT=out
 INCLUDES=$(foreach m, $(MODULES), -I$(m)/inc)
 _DEFINES=$(foreach m, $(DEFINES), -D$(m))
-OBJECTS=$(addprefix $(OUT)/, $(SRC:.c=.o) $(ASRC:.s=.o))
+OBJECTS=$(addprefix $(OUT)/, $(SRC:.c=.o) $(ASRC:.S=.o))
 DEPS=$(SRC:.c=.d)
 LDSCRIPT=lib/ciaa_lpc4337.ld
 
@@ -64,7 +64,7 @@ $(OUT)/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(Q)$(CC) -MMD $(CFLAGS) -c -o $@ $<
 
-$(OUT)/%.o: %.s
+$(OUT)/%.o: %.S
 	@echo AS $<
 	@mkdir -p $(dir $@)
 	$(Q)$(AS) -MMD $(CFLAGS) -c -o $@ $<

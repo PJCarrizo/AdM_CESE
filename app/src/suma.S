@@ -52,6 +52,9 @@
 	.global asmSum
 
 
+#define op1 r0
+#define op2 r1
+
 	/**
 	 * Indicamos que la siguiente subrutina debe ser ensamblada en modo thumb,
 	 * entonces en las direcciones en el ultimo bit tendran el 1 para que se reconozcan como en modo thumb.
@@ -71,7 +74,7 @@
 
 asmSum:
     push {lr}  /* guardamos la direccion de retorno en la pila */
-	add r0, r1 /* r0 = r0 + r1 */
+	add op1, op2 /* r0 = r0 + r1 */
 	pop {pc}   /* retorno */
 
 	/* otras alternativas para el retorno */
