@@ -41,6 +41,7 @@
 
 #include "main.h"
 #include "board.h"
+#include "suma.h"
 
 /*==================[macros and definitions]=================================*/
 
