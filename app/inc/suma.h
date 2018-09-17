@@ -35,6 +35,7 @@
 #define _SUMA_H_
 
 /*==================[inclusions]=============================================*/
+#include <stdint.h>
 
 /*==================[cplusplus]==============================================*/
 
@@ -57,6 +58,7 @@ extern "C" {
  * @return suma
  */
 extern uint32_t asmSum(uint32_t firstOperand, uint32_t secondOperand);
+extern uint32_t CSum(uint32_t firstOperand, uint32_t secondOperand);
 /*==================[cplusplus]==============================================*/
 
 #ifdef __cplusplus

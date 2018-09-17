@@ -35,7 +35,7 @@
 
 	/**
 	 * Directiva al ensablador que permite indicar que se encarga de buscar
-	 * la instruccion mas apropiada entre thumb y thumb2
+	 * la instruccion mas apropiada entre ARM y thumb2
 	 */
 	.syntax unified
 

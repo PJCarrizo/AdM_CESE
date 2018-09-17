@@ -30,63 +30,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- 
-/** @brief This is a simple blink example.
- */
 
-/** \addtogroup blink Bare-metal blink example
- ** @{ */
+#ifndef _SUMA_H_
+#define _SUMA_H_
 
 /*==================[inclusions]=============================================*/
 
-#include "main.h"
-#include "board.h"
-#include "suma.h"
+/*==================[cplusplus]==============================================*/
 
-/*==================[macros and definitions]=================================*/
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-/*==================[internal data declaration]==============================*/
+/*==================[macros]=================================================*/
 
-/*==================[internal functions declaration]=========================*/
+/*==================[typedef]================================================*/
 
-/** @brief hardware initialization function
- *	@return none
+/*==================[external data declaration]==============================*/
+
+/*==================[external functions declaration]=========================*/
+
+/**
+ * Funcion que suma dos enteros de 32 bits y devuelve el resultado
+ * @param firstOperand primer sumando
+ * @param secondOperand segundo sumando
+ * @return suma
  */
-static void initHardware(void);
+extern uint32_t asmSum(uint32_t firstOperand, uint32_t secondOperand);
+/*==================[cplusplus]==============================================*/
 
-/*==================[internal data definition]===============================*/
-
-/*==================[external data definition]===============================*/
-
-/*==================[internal functions definition]==========================*/
-
-static void initHardware(void)
-{
-	Board_Init();
-	SystemCoreClockUpdate();
-	//SysTick_Config(SystemCoreClock / 1000);
+#ifdef __cplusplus
 }
-
-/*==================[external functions definition]==========================*/
-
-int main(void)
-{
-	volatile  uint32_t aValue = 20,
-			 otherValue = 30,
-			 sumResult_Asm,sumResult_C;
-
-	initHardware();
-
-	sumResult_C= CSum(aValue,otherValue);
-
-	sumResult_Asm = asmSum(aValue, otherValue);
-
-	while (1)
-	{
-		__WFI(); //wfi
-	}
-}
+#endif
 
 /** @} doxygen end group definition */
-
 /*==================[end of file]============================================*/
+#endif /* #ifndef _MAIN_H_ */

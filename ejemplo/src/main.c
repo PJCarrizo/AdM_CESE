@@ -71,19 +71,17 @@ static void initHardware(void)
 
 int main(void)
 {
-	volatile  uint32_t aValue = 20,
+	uint32_t aValue = 20,
 			 otherValue = 30,
-			 sumResult_Asm,sumResult_C;
+			 sumResult;
 
 	initHardware();
 
-	sumResult_C= CSum(aValue,otherValue);
-
-	sumResult_Asm = asmSum(aValue, otherValue);
+	sumResult = asmSum(aValue, otherValue);
 
 	while (1)
 	{
-		__WFI(); //wfi
+		__WFI();
 	}
 }
 

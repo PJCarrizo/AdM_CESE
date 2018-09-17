@@ -30,63 +30,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- 
-/** @brief This is a simple blink example.
- */
+
+#ifndef _MAIN_H_
+#define _MAIN_H_
 
 /** \addtogroup blink Bare-metal blink example
  ** @{ */
 
 /*==================[inclusions]=============================================*/
 
-#include "main.h"
-#include "board.h"
-#include "suma.h"
+/*==================[cplusplus]==============================================*/
 
-/*==================[macros and definitions]=================================*/
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-/*==================[internal data declaration]==============================*/
+/*==================[macros]=================================================*/
 
-/*==================[internal functions declaration]=========================*/
+/** delay in milliseconds */
+#define DELAY_MS 500
 
-/** @brief hardware initialization function
- *	@return none
+/** led number to toggle */
+#define LED 0
+
+/*==================[typedef]================================================*/
+
+/*==================[external data declaration]==============================*/
+
+/*==================[external functions declaration]=========================*/
+
+/** @brief main function
+ * @return main function should never return
  */
-static void initHardware(void);
+int main(void);
 
-/*==================[internal data definition]===============================*/
+/*==================[cplusplus]==============================================*/
 
-/*==================[external data definition]===============================*/
-
-/*==================[internal functions definition]==========================*/
-
-static void initHardware(void)
-{
-	Board_Init();
-	SystemCoreClockUpdate();
-	//SysTick_Config(SystemCoreClock / 1000);
+#ifdef __cplusplus
 }
-
-/*==================[external functions definition]==========================*/
-
-int main(void)
-{
-	volatile  uint32_t aValue = 20,
-			 otherValue = 30,
-			 sumResult_Asm,sumResult_C;
-
-	initHardware();
-
-	sumResult_C= CSum(aValue,otherValue);
-
-	sumResult_Asm = asmSum(aValue, otherValue);
-
-	while (1)
-	{
-		__WFI(); //wfi
-	}
-}
+#endif
 
 /** @} doxygen end group definition */
-
 /*==================[end of file]============================================*/
+#endif /* #ifndef _MAIN_H_ */

@@ -1,3 +1,5 @@
+/** Ejemplo de archivo de assembler */
+
 /* Copyright 2018, Facundo Larosa - Danilo Zecchin
  * All rights reserved.
  *
@@ -30,63 +32,52 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
- 
-/** @brief This is a simple blink example.
- */
 
-/** \addtogroup blink Bare-metal blink example
- ** @{ */
+	/**
+	 * Directiva al ensablador que permite indicar que se encarga de buscar
+	 * la instruccion mas apropiada entre thumb y thumb2
+	 */
+	.syntax unified
 
-/*==================[inclusions]=============================================*/
+	/**
+	 * .text permite indicar una seccion de codigo.
+	 */
+	.text
 
-#include "main.h"
-#include "board.h"
-#include "suma.h"
+	/**
+	 * .global permite definir un simbolo exportable,
+	 * es decir que podemos verlo desde otros modulos (equivalente a extern).
+     * Definimos la rutina como global para que sea visible desde otros modulos.
+     */
+	.global asmSum
 
-/*==================[macros and definitions]=================================*/
 
-/*==================[internal data declaration]==============================*/
+#define op1 r0
+#define op2 r1
 
-/*==================[internal functions declaration]=========================*/
+	/**
+	 * Indicamos que la siguiente subrutina debe ser ensamblada en modo thumb,
+	 * entonces en las direcciones en el ultimo bit tendran el 1 para que se reconozcan como en modo thumb.
+	 * Siempre hay que ponerla antes de la primer instruccion.
+	 */
+	.thumb_func
 
-/** @brief hardware initialization function
- *	@return none
- */
-static void initHardware(void);
 
-/*==================[internal data definition]===============================*/
+/**
+ *	prototipo de la funcion en C
+ *
+ *	uint32_t asmSum(uint32_t firstOperand, uint32_t secondOperand);
+ *
+ *	En r0 se cargara firstOperand y en r1 se carga secondOperand. Luego el valor devuelto estara en r0 (si son 32 bits).
+ *	Si el resultado que retorna es en 64 bits, usa r0 y r1.
+*/
 
-/*==================[external data definition]===============================*/
+asmSum:
+    push {lr}  /* guardamos la direccion de retorno en la pila */
+	add op1, op2 /* r0 = r0 + r1 */
+	pop {pc}   /* retorno */
 
-/*==================[internal functions definition]==========================*/
-
-static void initHardware(void)
-{
-	Board_Init();
-	SystemCoreClockUpdate();
-	//SysTick_Config(SystemCoreClock / 1000);
-}
-
-/*==================[external functions definition]==========================*/
-
-int main(void)
-{
-	volatile  uint32_t aValue = 20,
-			 otherValue = 30,
-			 sumResult_Asm,sumResult_C;
-
-	initHardware();
-
-	sumResult_C= CSum(aValue,otherValue);
-
-	sumResult_Asm = asmSum(aValue, otherValue);
-
-	while (1)
-	{
-		__WFI(); //wfi
-	}
-}
-
-/** @} doxygen end group definition */
-
-/*==================[end of file]============================================*/
+	/* otras alternativas para el retorno */
+	/* 1. mov pc,lr
+	/  2. bx lr */
+	/* pop {pc} */
