@@ -77,6 +77,8 @@ int main(void)
 
 	initHardware();
 
+	volatile  uint32_t x = __get_CONTROL ();
+
 	sumResult_C= CSum(aValue,otherValue);
 
 	sumResult_Asm = asmSum(aValue, otherValue);
