@@ -6,6 +6,7 @@
 #include <stdnoreturn.h>
 
 
+
 // Variable que se incrementa cada vez que se llama al handler de interrupcion
 // del SYSTICK.
 static volatile uint32_t s_ticks = 0;
@@ -139,16 +140,59 @@ noreturn void LoopInfinito (void)
     }
 }
 
+//************************************************************************************************************//
+// Estructura del programa donde se desarrollan las funciones de los Ejercicios de la Guia Práctica
+//************************************************************************************************************//
+
+
+
+
+static void Suma (void)
+{
+    const uint32_t A = 20;
+    const uint32_t B = 30;
+
+    const uint32_t SumResult_C = c_sum (A, B);
+    const uint32_t SumResult_Asm = asm_sum (A, B);
+
+    // Actividad de debug: SumResult_C y SumResult_Asm deberian contener el
+    // mismo valor.
+    __BKPT (0);
+
+    (void) SumResult_C;
+    (void) SumResult_Asm;
+}
+
+
+//************************************************************************************************************//
+
+//************************************************************************************************************//
+// Carrera de Especialización / Maestría de Sistemas Embebidos
+// Universidad de Buenos Aires
+// Arquitectura de Microprocesadores
+//
+//		Guía de Ejercicios
+// Se pide realizar los ejercicios primeros en C y luego en assembler, verificando posteriormente que
+// el algoritmo funcione correctamente y tomando nota del tiempo de ejecución en ciclos de cada
+// función y su diferencia.
 
 int main (void)
 {
     Inicio ();
-    // Ejercicio 1 //
+
     Suma ();
 
     PrivilegiosSVC ();
 
     LlamandoAMalloc ();
+
+    // 1) Realizar una función que inicialice un vector con ceros. La función debe tener el siguiente
+    //    prototipo:
+    // 				void zeros (uint32_t * vector, uint32_t longitud); //
+    Ejercicio1_vecto_zeros ();
+	// 2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
+	//    para cambiar el nivel de amplitud de una señal).
+	//    			void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut uint32_t longitud, uint32_t escalar);
 
     LoopInfinito ();
 }
