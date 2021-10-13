@@ -147,20 +147,23 @@ noreturn void LoopInfinito (void)
 
 
 
-static void Suma (void)
+static void Ejercicio1_vector_zeros (void)
 {
-    const uint32_t A = 20;
-    const uint32_t B = 30;
+    uint32_t counter = 20;
+	uint32_t vector_c [counter] = 0;
+    uint32_t vector_asm [counter] = 0;
+    uint32_t *p_vector_c = vector_c;
+    uint32_t *p_vector_asm = vector_asm;
 
-    const uint32_t SumResult_C = c_sum (A, B);
-    const uint32_t SumResult_Asm = asm_sum (A, B);
+
+	c_vector_zeros (p_vector_c, counter);
+	asm_vector_zeros (p_vector_asm, counter);
+
+
 
     // Actividad de debug: SumResult_C y SumResult_Asm deberian contener el
     // mismo valor.
     __BKPT (0);
-
-    (void) SumResult_C;
-    (void) SumResult_Asm;
 }
 
 
@@ -189,7 +192,7 @@ int main (void)
     // 1) Realizar una función que inicialice un vector con ceros. La función debe tener el siguiente
     //    prototipo:
     // 				void zeros (uint32_t * vector, uint32_t longitud); //
-    Ejercicio1_vecto_zeros ();
+    Ejercicio1_vector_zeros ();
 	// 2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
 	//    para cambiar el nivel de amplitud de una señal).
 	//    			void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut uint32_t longitud, uint32_t escalar);

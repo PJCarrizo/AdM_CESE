@@ -5,7 +5,7 @@
 @ Simbolos exportados
 .global asm_sum
 .global asm_svc
-
+.global asm_vector_zeros
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @ Prototipo en "C":
 @   uint32_t asmSum (uint32_t firstOperand, uint32_t secondOperand)
@@ -40,3 +40,34 @@
     asm_svc:
         svc 0
         bx lr
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@  void c_vector_zeros (uint32_t * vector, uint32_t longitud)
+@
+@ Parametros recibidos:
+@   r0: vector
+@   r1: longitud
+@
+@ Valor de retorno:
+@   r2: valor cero
+@
+.thumb_func
+    asm_vector_zeros:
+        mov	r2, 0;
+    .loop:
+        str r2, [r0], 4    @ sizeof(uint32_t) == 4 , *vector++ = r2
+        subs r1, 1           @ --longitud
+        bne .loop
+
+        bx lr       @ vuelve adonde fue llamada (especificamente, si "pc"
+                    @ es la direccion, en el codigo del programa, de la
+                    @ instruccion "bl asm_sum" usada para saltar a
+                    @ esta funcion, entonces "lr" contiene ese "pc" + 4).
+                    @ el valor de retorno debe quedar en el registro r0.
+                    @ En este caso, r0 es el resultado de r0 + r1.
+
+        @ Otras alternativas para el retorno
+        @ mov pc,lr
+        @ bx lr
+        @ push {lr} ... pop {pc}
