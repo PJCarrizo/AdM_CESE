@@ -150,8 +150,8 @@ noreturn void LoopInfinito (void)
 static void Ejercicio1_vector_zeros (void)
 {
     uint32_t counter = 20;
-	uint32_t vector_c [counter] = 0;
-    uint32_t vector_asm [counter] = 0;
+	uint32_t vector_c [counter];
+    uint32_t vector_asm [counter];
     uint32_t *p_vector_c = vector_c;
     uint32_t *p_vector_asm = vector_asm;
 
@@ -166,6 +166,39 @@ static void Ejercicio1_vector_zeros (void)
     __BKPT (0);
 }
 
+
+//************************************************************************************************************//
+// Estructura del programa donde se desarrollan las funciones de los Ejercicios de la Guia Práctica
+//************************************************************************************************************//
+
+
+
+
+static void Ejercicio2_vector_escalar (void)
+{
+    uint32_t counter = 20;
+	uint32_t vector_c [counter];
+    uint32_t vector_asm [counter];
+    uint32_t *p_vector_c = vector_c;
+    uint32_t *p_vector_asm = vector_asm;
+	uint32_t vectorOut_c [counter];
+    uint32_t vectorOut_asm [counter];
+    uint32_t *p_vectorOut_c = vectorOut_c;
+    uint32_t *p_vectorOut_asm = vectorOut_asm;
+
+    uint32_t escalar = 10;
+
+    c_productoEscalar32 (p_vector_c, p_vectorOut_c, counter, escalar);
+    asm_productoEscalar32 (p_vector_asm, p_vectorOut_asm, counter, escalar);
+    //c_vector_escalar (p_vector_c, counter, escalar);
+	//asm_vector_escalar (p_vector_asm, counter);
+
+
+
+    // Actividad de debug: SumResult_C y SumResult_Asm deberian contener el
+    // mismo valor.
+    __BKPT (0);
+}
 
 //************************************************************************************************************//
 
@@ -193,6 +226,10 @@ int main (void)
     //    prototipo:
     // 				void zeros (uint32_t * vector, uint32_t longitud); //
     Ejercicio1_vector_zeros ();
+	// 2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
+	//    para cambiar el nivel de amplitud de una señal).
+	//    			void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut uint32_t longitud, uint32_t escalar);
+    Ejercicio2_vector_escalar ();
 	// 2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
 	//    para cambiar el nivel de amplitud de una señal).
 	//    			void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut uint32_t longitud, uint32_t escalar);

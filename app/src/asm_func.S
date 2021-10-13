@@ -42,6 +42,8 @@
         bx lr
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ 							Ejercicio 1
+@
 @ Prototipo en "C":
 @  void c_vector_zeros (uint32_t * vector, uint32_t longitud)
 @
@@ -55,10 +57,44 @@
 .thumb_func
     asm_vector_zeros:
         mov	r2, 0;
-    .loop:
-        str r2, [r0], 4    @ sizeof(uint32_t) == 4 , *vector++ = r2
-        subs r1, 1           @ --longitud
-        bne .loop
+    .loop_vector_zeros:
+        str r2, [r0], 4    // cargo con cero (r2) la posicion indicada por el puntero r0 y despazo 4 bytes
+        subs r1, 1         // decremento longitud
+        bne .loop_vector_zeros		   // salto a .loop_vector_zeros si Z = 0
+
+        bx lr       @ vuelve adonde fue llamada (especificamente, si "pc"
+                    @ es la direccion, en el codigo del programa, de la
+                    @ instruccion "bl asm_sum" usada para saltar a
+                    @ esta funcion, entonces "lr" contiene ese "pc" + 4).
+                    @ el valor de retorno debe quedar en el registro r0.
+                    @ En este caso, r0 es el resultado de r0 + r1.
+
+        @ Otras alternativas para el retorno
+        @ mov pc,lr
+        @ bx lr
+        @ push {lr} ... pop {pc}
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ 							Ejercicio 2
+@
+@ Prototipo en "C":
+@  void c_vector_zeros (uint32_t * vector, uint32_t longitud)
+@
+@ Parametros recibidos:
+@   r0: vector
+@   r2: longitud
+@	r3: escalar
+@
+@ Valor de retorno:
+@   r1: valor del producto del vector por el escalar
+@
+.thumb_func
+    asm_vector_zeros:
+        mov	r2, 0;
+    .loop_vector_zeros:
+        str r2, [r0], 4    // cargo con cero (r2) la posicion indicada por el puntero r0 y despazo 4 bytes
+        subs r1, 1         // decremento longitud
+        bne .loop_vector_zeros		   // salto a .loop_vector_zeros si Z = 0
 
         bx lr       @ vuelve adonde fue llamada (especificamente, si "pc"
                     @ es la direccion, en el codigo del programa, de la
