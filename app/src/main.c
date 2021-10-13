@@ -1,94 +1,154 @@
-/* Copyright 2018, Facundo Larosa - Danilo Zecchin
- * All rights reserved.
- *
- * This file is part of arquitecturaDeMicroprocesadores.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * 3. Neither the name of the copyright holder nor the names of its
- *    contributors may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- */
- 
-/** @brief This is a simple blink example.
- */
-
-/** \addtogroup blink Bare-metal blink example
- ** @{ */
-
-/*==================[inclusions]=============================================*/
-
-#include "main.h"
 #include "board.h"
-#include "suma.h"
+#include "c_func.h"
+#include "asm_func.h"
 
-/*==================[macros and definitions]=================================*/
+#include <stdlib.h>
+#include <stdnoreturn.h>
 
-/*==================[internal data declaration]==============================*/
 
-/*==================[internal functions declaration]=========================*/
+// Variable que se incrementa cada vez que se llama al handler de interrupcion
+// del SYSTICK.
+static volatile uint32_t s_ticks = 0;
 
-/** @brief hardware initialization function
- *	@return none
- */
-static void initHardware(void);
 
-/*==================[internal data definition]===============================*/
-
-/*==================[external data definition]===============================*/
-
-/*==================[internal functions definition]==========================*/
-
-static void initHardware(void)
+// Inicia soporte de la placa y periodo de la interrupcion del SYSTICK
+// cada 1 milisegundo.
+static void Inicio (void)
 {
-	Board_Init();
-	SystemCoreClockUpdate();
-	//SysTick_Config(SystemCoreClock / 1000);
+    Board_Init ();
+    SystemCoreClockUpdate ();
+    SysTick_Config (SystemCoreClock / 1000);
 }
 
-/*==================[external functions definition]==========================*/
 
-int main(void)
+// Segun la configuracion realizada en Inicio(), este handler de interrupcion
+// se ejecutara cada 1 milisegundo.
+void SysTick_Handler (void)
 {
-	volatile  uint32_t aValue = 20,
-			 otherValue = 30,
-			 sumResult_Asm,sumResult_C;
-
-	initHardware();
-
-	volatile  uint32_t x = __get_CONTROL ();
-
-	sumResult_C= CSum(aValue,otherValue);
-
-	sumResult_Asm = asmSum(aValue, otherValue);
-
-	while (1)
-	{
-		__WFI(); //wfi
-	}
+    ++ s_ticks;
 }
 
-/** @} doxygen end group definition */
 
-/*==================[end of file]============================================*/
+static void Suma (void)
+{
+    const uint32_t A = 20;
+    const uint32_t B = 30;
+
+    const uint32_t SumResult_C = c_sum (A, B);
+    const uint32_t SumResult_Asm = asm_sum (A, B);
+
+    // Actividad de debug: SumResult_C y SumResult_Asm deberian contener el
+    // mismo valor.
+    __BKPT (0);
+
+    (void) SumResult_C;
+    (void) SumResult_Asm;
+}
+
+
+static void LlamandoAMalloc (void)
+{
+    // De donde saca memoria malloc?
+    // (se vera en clase)
+    void * ptr = malloc (2048);
+
+    (void) ptr;
+}
+
+
+static void PrivilegiosSVC (void)
+{
+    // Obtiene valor del registro de 32 bits del procesador llamado "control".
+    // El registro guarda los siguientes estados:
+    // bit 2: Uso de FPU en el contexto actual. Usado=1, no usado=0.
+    // bit 1: Mapeo del stack pointer(sp). MSP=0, PSP=1.
+    // bit 0: Modo de ejecucion en Thread. Privilegiado=0, No privilegiado=1.
+    //        Recordar que este valor solo se usa en modo Thread. Las
+    //        interrupciones siempre se ejecutan en modo Handler con total
+    //        privilegio.
+    uint32_t x = __get_CONTROL ();
+
+    // Actividad de debug: Ver registro "control" y valor de variable "x".
+    __BKPT (0);
+
+    x |= 1;
+    // bit 0 a modo No privilegiado.
+    __set_CONTROL (x);
+
+    // En este punto se estaria ejecutando en modo No privilegiado.
+    // Lectura del registro "control" para confirmar.
+    x = __get_CONTROL ();
+
+    // Actividad de debug: Ver registro "control" y valor de variable "x".
+    __BKPT (0);
+
+    x &= ~1u;
+    // Se intenta volver a modo Privilegiado (bit 0, valor 0).
+    __set_CONTROL (x);
+
+    // Confirma que esta operacion es ignorada por estar ejecutandose en modo
+    // Thread no privilegiado.
+    x = __get_CONTROL ();
+
+    // Actividad de debug: Ver registro "control" y valor de variable "x".
+    __BKPT (0);
+
+    // En este punto, ejecutando en modo Thread no privilegiado, la unica forma
+    // de volver a modo privilegiado o de realizar cualquier cambio que requiera
+    // modo privilegiado, es pidiendo ese servicio a un hipotetico sistema
+    // opertivo de tiempo real.
+    // Para esto se invoca por software a la interrupcion SVC (Supervisor Call)
+    // utilizando la instruccion "svc".
+    // No hay intrinsics para realizar esta tarea. Para utilizar la instruccion
+    // es necesario implementar una funcion en assembler. Ver el archivo suma.S.
+    asm_svc ();
+
+    // El sistema operativo (el handler de SVC) deberia haber devuelto el modo
+    // de ejecucion de Thread a privilegiado (bit 0 en valor 0).
+    x = __get_CONTROL ();
+
+    // Fin del ejemplo de SVC
+}
+
+
+// Handler de la interrupcion "SVC" (Supervisor Call).
+// Usado por el ejemplo "EjemploPrivilegiosSVC".
+void SVC_Handler (void)
+{
+    // Se obtiene el valor del registro "control". El bit 0 indica el nivel
+    // de privilegio en modo "Thread". Deberia ser 1: No privilegiado.
+    uint32_t x = __get_CONTROL ();
+
+    // Borra el bit 0. Nuevo valor 0: privilegiado.
+    x &= ~1u;
+
+    // Asigna el nuevo valor al registro "control". Esta operacion deberia
+    // ejecutarse ya que todo manejador de interrupciones se ejecuta en modo
+    // "Handler" con total privilegio.
+    __set_CONTROL (x);
+}
+
+
+noreturn void LoopInfinito (void)
+{
+    while (1)
+    {
+        // Procesador en modo espera hasta que ocurra una interrupcion
+        // (Bajo consumo)
+        __WFI();
+    }
+}
+
+
+int main (void)
+{
+    Inicio ();
+    // Ejercicio 1 //
+    Suma ();
+
+    PrivilegiosSVC ();
+
+    LlamandoAMalloc ();
+
+    LoopInfinito ();
+}

@@ -35,12 +35,15 @@
 #define _SUMA_H_
 
 /*==================[inclusions]=============================================*/
+#include <stdint.h>
 
 /*==================[cplusplus]==============================================*/
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+uint32_t CSum(uint32_t firstOperand, uint32_t secondOperand);
 
 /*==================[macros]=================================================*/
 

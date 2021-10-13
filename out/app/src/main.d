@@ -1,4 +1,4 @@
-out/app/src/main.o: app/src/main.c app/inc/main.h \
+out/app/src/main.o: app/src/main.c \
  lib/lpc_board_ciaa_edu_4337/inc/board.h lib/lpc_chip_43xx/inc/chip.h \
  lib/lpc_chip_43xx/inc/sys_config.h lib/lpc_chip_43xx/inc/cmsis.h \
  lib/lpc_chip_43xx/inc/lpc_types.h lib/lpc_chip_43xx/inc/cmsis_43xx.h \
@@ -55,4 +55,4 @@ out/app/src/main.o: app/src/main.c app/inc/main.h \
  lib/lpc_chip_43xx/inc/iap_18xx_43xx.h lib/lpc_chip_43xx/inc/error.h \
  lib/lpc_chip_43xx/inc/i2cm_18xx_43xx.h lib/lpc_chip_43xx/inc/fpu_init.h \
  lib/lpc_board_ciaa_edu_4337/inc/board_api.h \
- lib/lpc_chip_43xx/inc/lpc_types.h app/inc/suma.h
+ lib/lpc_chip_43xx/inc/lpc_types.h app/inc/c_func.h app/inc/asm_func.h
