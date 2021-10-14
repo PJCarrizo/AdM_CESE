@@ -152,17 +152,13 @@ static void Ejercicio1_vector_zeros (void)
     uint32_t counter = 20;
 	uint32_t vector_c [counter];
     uint32_t vector_asm [counter];
-    uint32_t *p_vector_c = vector_c;
-    uint32_t *p_vector_asm = vector_asm;
 
 
-	c_vector_zeros (p_vector_c, counter);
-	asm_vector_zeros (p_vector_asm, counter);
+	c_vector_zeros (vector_c, counter);
+	asm_vector_zeros (vector_asm, counter);
 
 
 
-    // Actividad de debug: SumResult_C y SumResult_Asm deberian contener el
-    // mismo valor.
     __BKPT (0);
 }
 
@@ -179,28 +175,127 @@ static void Ejercicio2_vector_escalar (void)
     uint32_t counter = 20;
 	uint32_t vector_c [counter];
     uint32_t vector_asm [counter];
-    uint32_t *p_vector_c = vector_c;
-    uint32_t *p_vector_asm = vector_asm;
-	uint32_t vectorOut_c [counter];
+
+    uint32_t vectorOut_c [counter];
     uint32_t vectorOut_asm [counter];
-    uint32_t *p_vectorOut_c = vectorOut_c;
-    uint32_t *p_vectorOut_asm = vectorOut_asm;
 
     uint32_t escalar = 10;
 
-    c_productoEscalar32 (p_vector_c, p_vectorOut_c, counter, escalar);
-    asm_productoEscalar32 (p_vector_asm, p_vectorOut_asm, counter, escalar);
-    //c_vector_escalar (p_vector_c, counter, escalar);
-	//asm_vector_escalar (p_vector_asm, counter);
+    c_producto_Vector_Escalar32 (vector_c, vectorOut_c, counter, escalar);
+    asm_producto_Vector_Escalar32 (vector_asm, vectorOut_asm, counter, escalar);
 
 
 
-    // Actividad de debug: SumResult_C y SumResult_Asm deberian contener el
-    // mismo valor.
     __BKPT (0);
 }
 
+//************************************************************************************************************//
+// Estructura del programa donde se desarrollan las funciones de los Ejercicios de la Guia Práctica
+//************************************************************************************************************//
 
+
+
+static void Ejercicio3_vector16bits_escalar (void)
+{
+    uint16_t counter = 20;
+	uint16_t vector_c [counter];
+    uint16_t vector_asm [counter];
+
+	uint16_t vectorOut_c [counter];
+    uint16_t vectorOut_asm [counter];
+
+
+    uint16_t escalar = 10;
+
+    c_producto_Vector_Escalar16 (vector_c, vectorOut_c, counter, escalar);
+    asm_producto_Vector_Escalar16 (vector_asm, vectorOut_asm, counter, escalar);
+
+    __BKPT (0);
+}
+
+//************************************************************************************************************//
+// Estructura del programa donde se desarrollan las funciones de los Ejercicios de la Guia Práctica
+//************************************************************************************************************//
+
+
+
+static void Ejercicio4_vector16bits_escalar_sat12bits (void)
+{
+    uint16_t counter = 20;
+	uint16_t vector_c [counter];
+    uint16_t vector_asm [counter];
+
+	uint16_t vectorOut_c [counter];
+    uint16_t vectorOut_asm [counter];
+
+
+    uint16_t escalar = 10;
+    escalar = escalar * 0x0FFF;
+    c_producto_Vector_Escalar16 (vector_c, vectorOut_c, counter, escalar);
+    asm_producto_Vector_Escalar16 (vector_asm, vectorOut_asm, counter, escalar);
+
+    __BKPT (0);
+}
+
+//************************************************************************************************************//
+// Estructura del programa donde se desarrollan las funciones de los Ejercicios de la Guia Práctica
+//************************************************************************************************************//
+
+static void Ejercicio5_filtroventana (void)
+{
+    uint16_t counter = 10;
+	uint16_t vector_c [counter];
+    uint16_t vector_asm [counter];
+
+	uint16_t vectorOut_c [counter];
+    uint16_t vectorOut_asm [counter];
+
+    //void filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
+    c_filtroventana10 (vector_c, vectorOut_c, counter);
+    asm_filtroventana10 (vector_asm, vectorOut_asm, counter);
+
+    __BKPT (0);
+}
+
+//************************************************************************************************************//
+// Estructura del programa donde se desarrollan las funciones de los Ejercicios de la Guia Práctica
+//************************************************************************************************************//
+
+static void Ejercicio6_empaquetado (void)
+{
+    uint32_t counter = 10;
+	int32_t vector_c [counter];
+    int32_t vector_asm [counter];
+
+	int16_t vectorOut_c [counter];
+    int16_t vectorOut_asm [counter];
+
+    //void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
+    c_pack32to16 (vector_c, vectorOut_c, counter);
+    asm_pack32to16 (vector_asm, vectorOut_asm, counter);
+
+    __BKPT (0);
+}
+
+//************************************************************************************************************//
+// Estructura del programa donde se desarrollan las funciones de los Ejercicios de la Guia Práctica
+//************************************************************************************************************//
+
+static void Ejercicio7_max_valor (void)
+{
+    uint32_t counter = 10;
+	int32_t vector_c [counter];
+    int32_t vector_asm [counter];
+
+	int32_t c_maximo = 0;
+	int32_t asm_maximo = 0;
+    //int32_t max (int32_t * vectorIn, uint32_t longitud);
+    c_maximo = c_max(vector_c, counter);
+    //asm_maximo = asm_pack32to16 (vector_asm, counter);
+
+    __BKPT (0);
+}
+/*
 static void Ejercicio10_echo (void)
 {
 	uint32_t counter = 4096;
@@ -212,7 +307,10 @@ static void Ejercicio10_echo (void)
 	salida_echo = c_echo(p_long_vector, ingreso_echo, counter);
 	asm_echo();
 
+    __BKPT (0);
 }
+
+*/
 //************************************************************************************************************//
 
 //************************************************************************************************************//
@@ -235,18 +333,42 @@ int main (void)
 
     LlamandoAMalloc ();
 
-    // 1) Realizar una función que inicialice un vector con ceros. La función debe tener el siguiente
+    //	1) Realizar una función que inicialice un vector con ceros. La función debe tener el siguiente
     //    prototipo:
     // 				void zeros (uint32_t * vector, uint32_t longitud); //
     Ejercicio1_vector_zeros ();
-	// 2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
+	//	2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
 	//    para cambiar el nivel de amplitud de una señal).
 	//    			void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut uint32_t longitud, uint32_t escalar);
     Ejercicio2_vector_escalar ();
-	// 2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
-	//    para cambiar el nivel de amplitud de una señal).
-	//    			void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut uint32_t longitud, uint32_t escalar);
-    Ejercicio10_echo ();
+
+    //	3) Adapte la función del ejercicio 2 para realizar operaciones sobre vectores de 16 bits:
+    //				void productoEscalar16 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
+    Ejercicio3_vector16bits_escalar ();
+
+    //	4) Adapte la función del ejercicio 3 para saturar el resultado del producto a 12 bits:
+    //				void productoEscalar12 (uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitud, uint16_t escalar);
+    Ejercicio4_vector16bits_escalar_sat12bits ();
+
+
+    //	5) Realice una función que implemente un filtro de ventana móvil de 10 valores sobre un vector de
+    //	muestras.
+    //				void filtroVentana10(uint16_t * vectorIn, uint16_t * vectorOut, uint32_t longitudVectorIn);
+    Ejercicio5_filtroventana ();
+
+    //	6) Realizar una función que reciba un vector de números signados de 32 bits y los “empaquete” en
+    //	otro vector de 16 bits. La función deberá adecuar los valores de entrada a la nueva precisión.
+    //				void pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
+    Ejercicio6_empaquetado ();
+
+
+    //	7) Realizar una función que reciba un vector de números signados de 32 bits y devuelva la posición
+    //	del máximo del vector.
+    //				int32_t max (int32_t * vectorIn, uint32_t longitud);
+    Ejercicio7_max_valor ();
+
+
+    //Ejercicio10_echo ();
 	// 2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
 	//    para cambiar el nivel de amplitud de una señal).
 	//    			void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut uint32_t longitud, uint32_t escalar);
