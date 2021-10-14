@@ -17,3 +17,10 @@ void c_productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut, uint32_t lo
 	for (uint32_t i = 0; i < longitud; i++)
 			vectorOut [i] = vectorIn [i] * escalar;
 }
+uint32_t c_echo(uint32_t * p_long_vector, uint32_t ingreso_echo, uint32_t counter)
+{
+	for (uint32_t i = ingreso_echo; i < counter; counter)
+	{
+
+	}
+}

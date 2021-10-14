@@ -200,6 +200,19 @@ static void Ejercicio2_vector_escalar (void)
     __BKPT (0);
 }
 
+
+static void Ejercicio10_echo (void)
+{
+	uint32_t counter = 4096;
+	uint32_t long_vector [counter];
+	uint32_t *p_long_vector [counter] = long_vector;
+	uint32_t ingreso_echo = 882;
+	uint32_t salida_echo;
+
+	salida_echo = c_echo(p_long_vector, ingreso_echo, counter);
+	asm_echo();
+
+}
 //************************************************************************************************************//
 
 //************************************************************************************************************//
