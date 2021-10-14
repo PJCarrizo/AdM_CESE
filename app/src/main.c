@@ -233,6 +233,10 @@ int main (void)
 	// 2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
 	//    para cambiar el nivel de amplitud de una señal).
 	//    			void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut uint32_t longitud, uint32_t escalar);
+    Ejercicio10_echo ();
+	// 2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
+	//    para cambiar el nivel de amplitud de una señal).
+	//    			void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut uint32_t longitud, uint32_t escalar);
 
     LoopInfinito ();
 }
