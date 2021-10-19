@@ -243,3 +243,152 @@
         @ mov pc,lr
         @ bx lr
         @ push {lr} ... pop {pc}
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ 							Ejercicio 7
+@
+@ Prototipo en "C":
+@  int32_t max (int32_t * vectorIn, uint32_t longitud);
+@
+@ Parametros recibidos:
+@   r0: vectorIn
+@   r1: longitud
+@
+@
+@ Valor de retorno:
+@   r0: valor del valor maximo
+@
+@
+
+.thumb_func
+    asm_max:
+        @ Registros usados
+        @   r2: accum maximo - temporal
+        @   r3: posicion del valor maximo
+        @   r4: index vector
+        push {r2, r4}
+        ldr r2, [r0]            @ ubico al pincipio del vector
+        mov r3, 0               @ inicializo en 0
+        mov r4, 0               @ inicializo en 0
+        .loop_max:
+            ldr r2, [r0], 4     @ guardo el valor del vector de entrada
+            cmp r4, r2          @ comparo si el valor leido es mayor al maximo temporal
+            blt .is_less
+            mov r2, r4          @ si es mayor guardo el nuevo maximo
+            mov r3, r5          @ actualizo la posicion del maximo
+        .is_less:
+            add r5, 1           @ incremento el indice del vector
+            subs r1, 1          @ decremento el contador del loop
+            bne .loop_max
+        mov r0, r3            @ return max pos
+        pop {r4, r5}
+        bx lr
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@	Realizar una función que reciba un vector de muestras no signadas de 16 bits
+@	e invierta su orden.
+@   void invertir (uint16_t * vector, uint32_t longitud);
+@ Parametros recibidos:
+@   r0: *vectorIn
+@	r1: longitud
+.thumb_func
+	asm_invertir:
+	push {r2-r8}
+	mov r3,r1, ASR #1 @uint32_t centro = longitud >> 2;
+	mov r5,#0 @ r5 es i del for
+
+	mov r6,r0 @copio el puntero de posicion inicial
+	sub r7,r1,#1 @ en las 2 copio longitud -1
+	add r6,r6,r7, LSL #1	@se asigna a r6 la ultima posicion
+	@r7 lo puedes usar.
+	.loop_inv:
+	ldrh r7, [r0]
+    ldrh r8, [r6]
+
+    strh r8, [r0],#2    @ mem16[r0] = r6 ; copio la ultima en la primera
+	strh r7, [r6],#-2	@copio en la ultims pos y le resto 2
+	add r5, 1
+	cmp  r5, r3 @solo hago la mitad del arreglo
+	blt  .loop_inv
+	pop {r2-r8}
+	bx lr
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@
+@   void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N);
+@ Parametros recibidos:
+@   r0: *in
+@	r1: *eco
+@ 	r2: pos es la que ve la posicion max definida
+@ 	r3 es i del for
+@	r4 es los 20ms donde se debe meter el eco
+@
+.thumb_func
+	asm_eco:
+	push {r2-r8,lr}
+
+	mov r2,#4095 @r2 es pos
+	mov r4,#882 @r3 es i
+	mov r3,#0 @r3 es i
+	.loop_eco:
+		cmp r3,r4 @if init
+		blt .ifunomax
+		@el else
+		sub r6,r0,#1764	@j=ptrR0-882
+		ldrh r5,[r0],#2
+		ldrh r7,[r6]
+		mov r6,#0
+		uhadd16 r6,r7,r6
+		uadd16 r5,r5,r6
+		strh r5,[r1],#2
+		@---------------------
+		bl .endifunomax
+		.ifunomax:
+		@ el if
+		ldrh r5,[r0],#2
+		strh r5,[r1],#2
+		@---------------------
+		.endifunomax:@if end
+
+	add r3, 1
+	cmp  r3, r2
+	blt  .loop_eco
+
+	pop {r2-r8,pc}
+	bx lr
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Prototipo en "C":
+@   void invertir (uint16_t * vector, uint32_t longitud)
+@
+@ Parametros recibidos:
+@   r0: *vectorIn
+@   r1: longitud
+@
+.thumb_func
+    asm_invertir:
+        @ Registros usados
+        @   r2: utilizado para recorrer el vector de atras hacia adelante
+        @   r3: utilizado para guardar el valor de adelante
+        @   r4: utilizado para guardar el valor de atras
+
+        push {r4}
+        mov r2, r0              @ hago una copia de la direccion del vector
+        add r2, r2, r1, lsl 1   @ me posiciono en la ultima posicion
+        sub r2, 2               @ la ultima posicion esta en longitud-1
+        lsr r1, 1               @ La cantidad de iteraciones es la mitad de la longitud ya que
+                                @ voy cambiando los valores de adelante hacia atras y atras hacia
+                                @ adelante en cada ciclo.
+        .ej9_loop:
+            ldrh r3, [r0]        @ guardo el valor de adelante en una variable temporal
+            ldrh r4, [r2]        @ guardo el valor de atras en una variable temporal
+            strh r4, [r0], 2     @ el valor de atras pasa adelante
+            strh r3, [r2], -2    @ el valor de adelante pasa atras
+            subs r1, 1
+            bne .ej9_loop
+        pop {r4}
+        bx lr
