@@ -295,7 +295,29 @@ static void Ejercicio7_max_valor (void)
 
     __BKPT (0);
 }
-/*
+
+//************************************************************************************************************//
+// Estructura del programa donde se desarrollan las funciones de los Ejercicios de la Guia Práctica
+//************************************************************************************************************//
+
+
+Ejercicio8_sample ()
+
+
+//************************************************************************************************************//
+// Estructura del programa donde se desarrollan las funciones de los Ejercicios de la Guia Práctica
+//************************************************************************************************************//
+
+Ejercicio9_invertir ();
+
+
+
+//************************************************************************************************************//
+// Estructura del programa donde se desarrollan las funciones de los Ejercicios de la Guia Práctica
+//************************************************************************************************************//
+
+
+
 static void Ejercicio10_echo (void)
 {
 	uint32_t counter = 4096;
@@ -310,7 +332,7 @@ static void Ejercicio10_echo (void)
     __BKPT (0);
 }
 
-*/
+
 //************************************************************************************************************//
 
 //************************************************************************************************************//
@@ -368,10 +390,32 @@ int main (void)
     Ejercicio7_max_valor ();
 
 
-    //Ejercicio10_echo ();
-	// 2) Realizar una función que realice el producto de un vector y un escalar (por ejemplo, podría servir
-	//    para cambiar el nivel de amplitud de una señal).
-	//    			void productoEscalar32 (uint32_t * vectorIn, uint32_t * vectorOut uint32_t longitud, uint32_t escalar);
+
+
+    //	8) Realizar una función que reciba un vector de muestras signadas de 32 bits y lo decime
+    //	descartando una cada N muestras.
+    //				void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N);
+    Ejercicio8_sample ();
+
+
+    //	Realizar una función que reciba un vector de muestras no signadas de 16 bits e invierta su orden.
+    //				void invertir (uint16_t * vector, uint32_t longitud);
+    Ejercicio9_invertir ();
+
+    //	10) Realizar una función que recibe un vector de 4096 valores de 16 bits (signados), que
+    //	corresponden a muestras de audio tomadas a una tasa de muestreo de 44.100 muestras/s. La función
+    //	debe introducir un “eco” de la mitad de la amplitud de la muestra original a los 20ms de comenzada
+    //	la grabación.
+    //	Nota: El eco consiste en adicionar a la señal original, la propia señal original dividida por dos y
+    //	atrasada en 20ms, como muestra la ilustración debajo. Por qué la cantidad de muestras copiadas
+    //	iguales es de 882?
+    //	Variante: Una vez implementada la función, programar una nueva versión que utilice las
+    //	instrucciones SIMD para optimizar la ejecución del algoritmo.
+    Ejercicio10_eco ();
+
+
+
+
 
     LoopInfinito ();
 }

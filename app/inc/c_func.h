@@ -26,10 +26,14 @@ void c_pack32to16 (int32_t * vectorIn, int16_t *vectorOut, uint32_t longitud);
 // Ejercicio 7. Máximo valor en un vector
 int32_t c_max (int32_t * vectorIn, uint32_t longitud);
 
+// Ejercicio 8. Muestreo
+void downsampleM (int32_t * vectorIn, int32_t * vectorOut, uint32_t longitud, uint32_t N);
 
+// Ejercicio 9. Invertir valor en un vector
+void invertir (uint16_t * vector, uint32_t longitud);
 
-// Ejercicio 10
-/*uint32_t c_echo(p_long_vector, ingreso_echo);
-*/
+// Ejercicio 10. Echo
+uint32_t c_echo(p_long_vector, ingreso_echo);
+
 
 
